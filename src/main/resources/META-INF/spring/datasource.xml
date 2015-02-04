@@ -12,7 +12,7 @@
                            http://www.springframework.org/schema/tx/spring-tx.xsd
                            http://www.springframework.org/schema/data/jpa
                            http://www.springframework.org/schema/data/jpa/spring-jpa.xsd">
-    <context:property-placeholder location="WEB-INF/spring/datasource.properties"
+    <context:property-placeholder location="classpath:/META-INF/spring/datasource.properties"
                                   ignore-unresolvable="true"/>
 
       
@@ -35,7 +35,7 @@
         <property name="dataSource" ref="dataSource"/>
         <property name="packagesToScan">
             <array>
-                <value>org.jboss.tools.example.springmvc.model</value>
+                <value>org.megion.xapp.core.entity</value>
             </array>
         </property>
         <!-- property name="mappingResources" value="META-INF/orm.xml"/ -->
@@ -66,6 +66,7 @@
         <property name="transactionManager" ref="transactionManager"/>
     </bean>
     
-    <jpa:repositories base-package="org.jboss.tools.example.springmvc.data"/>
+    <!-- Autowired Entity Manager -->
+    <jpa:repositories base-package="org.megion.xapp.core.repository"/>
 
 </beans>

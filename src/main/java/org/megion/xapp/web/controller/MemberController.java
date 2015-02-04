@@ -1,10 +1,10 @@
-package org.jboss.tools.example.springmvc.controller;
+package org.megion.xapp.web.controller;
 
 import javax.validation.Valid;
 
-import org.jboss.tools.example.springmvc.data.MemberDao;
-import org.jboss.tools.example.springmvc.model.Member;
-
+import org.megion.xapp.core.entity.Member;
+import org.megion.xapp.core.repository.MemberRepository;
+import org.megion.xapp.core.service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.UnexpectedRollbackException;
@@ -18,13 +18,15 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @RequestMapping(value = "/")
 public class MemberController {
     @Autowired
-    private MemberDao memberDao;
+    private MemberRepository memberRepository;
+    
+    @Autowired
+    private MemberService memberService;
 
     @RequestMapping(method = RequestMethod.GET)
     public String displaySortedMembers(Model model) {
-    	//org.aspectj.lang.annotation.Around a;
         model.addAttribute("newMember", new Member());
-        model.addAttribute("members", memberDao.findAllOrderedByName());
+        model.addAttribute("members", memberRepository.findAllOrderedByName());
         //memberDao.test1();
         return "index";
     }
@@ -33,15 +35,15 @@ public class MemberController {
     public String registerNewMember(@Valid @ModelAttribute("newMember") Member newMember, BindingResult result, Model model) {
         if (!result.hasErrors()) {
             try {
-                memberDao.register(newMember);
+            	memberService.register(newMember);
                 return "redirect:/";
             } catch (UnexpectedRollbackException e) {
-                model.addAttribute("members", memberDao.findAllOrderedByName());
+                model.addAttribute("members", memberRepository.findAllOrderedByName());
                 model.addAttribute("error", e.getCause().getCause());
                 return "index";
             }
         } else {
-            model.addAttribute("members", memberDao.findAllOrderedByName());
+            model.addAttribute("members", memberRepository.findAllOrderedByName());
             return "index";
         }
     }
